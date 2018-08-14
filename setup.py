@@ -1,5 +1,8 @@
 from setuptools import setup
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='aladdin_connect',
     version='0.1',
@@ -9,6 +12,8 @@ setup(
     packages=['aladdin_connect'],
     scripts=[],
     description='Python API for controlling Genie garage doors connected to Aladdin Connect devices',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
