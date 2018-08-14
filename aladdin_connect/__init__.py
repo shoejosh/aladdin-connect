@@ -136,17 +136,18 @@ class AladdinConnectClient:
         doors = []
         for x in range(0, 3):
             door_response = response[x*3:x*3+3]
-            link_status_id = door_response[0]['result'][0][1]
-            if self.DOOR_LINK_STATUS[link_status_id] is not self.STATUS_NOT_CONFIGURED:
-                name = door_response[1]['result'][0][1]
-                door_status_id = door_response[2]['result'][0][1]
-                doors.append({
-                    'device_id': device_id,
-                    'door_number': x + 1,
-                    'name': name,
-                    'status': self.DOOR_STATUS[door_status_id],
-                    'link_status': self.DOOR_LINK_STATUS[link_status_id]
-                })
+            if len(door_response[0]['result']) > 0:
+                link_status_id = door_response[0]['result'][0][1]
+                if self.DOOR_LINK_STATUS[link_status_id] is not self.STATUS_NOT_CONFIGURED:
+                    name = door_response[1]['result'][0][1]
+                    door_status_id = door_response[2]['result'][0][1]
+                    doors.append({
+                        'device_id': device_id,
+                        'door_number': x + 1,
+                        'name': name,
+                        'status': self.DOOR_STATUS[door_status_id],
+                        'link_status': self.DOOR_LINK_STATUS[link_status_id]
+                    })
         return doors
 
     def close_door(self, device_id, door_number):
