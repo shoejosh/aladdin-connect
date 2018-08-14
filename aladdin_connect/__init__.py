@@ -122,9 +122,9 @@ class AladdinConnectClient:
             self._get_read_rpc_call('dps2.name', 5),
             self._get_read_rpc_call('dps2.door_status', 6),
 
-            self._get_read_rpc_call('dps2.link_status', 7),
-            self._get_read_rpc_call('dps2.name', 8),
-            self._get_read_rpc_call('dps2.door_status', 9)
+            self._get_read_rpc_call('dps3.link_status', 7),
+            self._get_read_rpc_call('dps3.name', 8),
+            self._get_read_rpc_call('dps3.door_status', 9)
         ]
 
         try:
