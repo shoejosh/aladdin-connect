@@ -24,7 +24,7 @@ class SessionManager:
                                       'BundleName': self.HEADER_BUNDLE_NAME,
                                       'User-Agent': self.HEADER_USER_AGENT,
                                       'BuildVersion': self.HEADER_BUILD_VERSION})
-        self._login_token = base64.b64encode(f"{email}:{password}".encode('utf-8')).decode('utf-8')
+        self._login_token = base64.b64encode("{}:{}".format(email, password).encode('utf-8')).decode('utf-8')
         self._auth_token = None
         self._user_email = email
         self._logged_in = False
@@ -33,14 +33,14 @@ class SessionManager:
         self._auth_token = None
         self._logged_in = False
 
-        self._session.headers.update({'Authorization': f'Basic {self._login_token}'})
+        self._session.headers.update({'Authorization': 'Basic {}'.format(self._login_token)})
 
         try:
             response = self.call_api(self.LOGIN_ENDPOINT, response_type='text')
             if response:
                 self._logged_in = True
                 self._auth_token = response
-                self._session.headers.update({'Authorization': f'Token: {self._auth_token}'})
+                self._session.headers.update({'Authorization': 'Token: {}'.format(self._auth_token)})
                 return True
         except ValueError as ex:
             self._LOGGER.error("Aladdin Connect - Unable to login %s", ex)

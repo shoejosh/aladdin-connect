@@ -160,8 +160,8 @@ class AladdinConnectClient:
         """Set door state"""
         payload = self._get_payload_auth_for_device(device_id)
         payload['calls'] = [
-            self._get_write_rpc_call(f'dps{door_number}.desired_status', 0, state),
-            self._get_write_rpc_call(f'dps{door_number}.desired_status_user', 1, self._user_email)
+            self._get_write_rpc_call('dps{}.desired_status'.format(door_number), 0, state),
+            self._get_write_rpc_call('dps{}.desired_status_user'.format(door_number), 1, self._user_email)
         ]
 
         try:
@@ -175,7 +175,7 @@ class AladdinConnectClient:
     def get_door_status(self, device_id, door_number):
         payload = self._get_payload_auth_for_device(device_id)
         payload['calls'] = [
-            self._get_read_rpc_call(f'dps{door_number}.door_status', 1),
+            self._get_read_rpc_call('dps{}.door_status'.format(door_number), 1),
         ]
 
         try:
