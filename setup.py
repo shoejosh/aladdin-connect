@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='aladdin_connect',
-    version='0.3',
+    version='0.4',
     author='Josh Shoemaker',
     author_email='shoejosh@gmail.com',
     url='http://github.com/shoejosh/aladdin-connect',
