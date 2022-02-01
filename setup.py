@@ -12,6 +12,7 @@ setup(
     packages=['aladdin_connect'],
     scripts=[],
     description='Python API for controlling Genie garage doors connected to Aladdin Connect devices',
+    license='MIT',
     long_description=long_description,
     long_description_content_type="text/markdown",
     classifiers=[
