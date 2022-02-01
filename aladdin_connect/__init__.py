@@ -4,10 +4,6 @@ from aladdin_connect.session_manager import SessionManager
 
 
 class AladdinConnectClient:
-    USER_DETAILS_ENDPOINT = "/users/_this"
-    GET_USER_PORTALS_ENDPOINT = "/users/{user_id}/portals"
-    GET_PORTAL_DETAILS_ENDPOINT = "/portals/{portal_id}"
-
     CONFIGURATION_ENDPOINT = "/configuration"
 
     DOOR_STATUS_OPEN = 'open'
