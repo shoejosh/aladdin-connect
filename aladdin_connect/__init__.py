@@ -19,11 +19,6 @@ class AladdinConnectClient:
     DOOR_COMMAND_CLOSE = "CloseDoor"
     DOOR_COMMAND_OPEN = "OpenDoor"
 
-    DOOR_COMMANDS = {
-        '0': DOOR_COMMAND_CLOSE,
-        '1': DOOR_COMMAND_OPEN
-    }
-
     DOOR_STATUS = {
         0: DOOR_STATUS_UNKNOWN,  # Unknown
         1: DOOR_STATUS_OPEN,  # open
@@ -35,9 +30,9 @@ class AladdinConnectClient:
         7: DOOR_STATUS_UNKNOWN  # Not Configured
     }
 
-    REQUEST_DOOR_STATUS = {
-        DOOR_STATUS_CLOSED: '0',
-        DOOR_STATUS_OPEN: '1'
+    REQUEST_DOOR_STATUS_COMMAND = {
+        DOOR_STATUS_CLOSED: DOOR_COMMAND_CLOSE,
+        DOOR_STATUS_OPEN: DOOR_COMMAND_OPEN
     }
 
     STATUS_CONNECTED = 'Connected'
@@ -102,20 +97,24 @@ class AladdinConnectClient:
             return
 
     def close_door(self, device_id, door_number):
-        self._set_door_status(device_id, door_number, self.REQUEST_DOOR_STATUS[self.DOOR_STATUS_CLOSED])
+        self._set_door_status(device_id, door_number, self.DOOR_STATUS_CLOSED)
 
     def open_door(self, device_id, door_number):
-        self._set_door_status(device_id, door_number, self.REQUEST_DOOR_STATUS[self.DOOR_STATUS_OPEN])
+        self._set_door_status(device_id, door_number, self.DOOR_STATUS_OPEN)
 
-    def _set_door_status(self, device_id, door_number, state):
+    def _set_door_status(self, device_id, door_number, requested_door_status):
         """Set door state"""
-        payload = {"command_key": self.DOOR_COMMANDS[state]}
+        payload = {"command_key": self.REQUEST_DOOR_STATUS_COMMAND[requested_door_status]}
 
         try:
             self._session.call_rpc(f"/devices/{device_id}/door/{door_number}/command", payload)
         except ValueError as ex:
-            self._LOGGER.error("Aladdin Connect - Unable to set door status %s", ex)
-            return False
+            # Ignore "Door is already open/closed" errors to maintain backwards compatibility
+            error = str(ex.args[0])
+            shouldIgnore = error.endswith(f'{{"code":400,"error":"Door is already {requested_door_status}"}}')
+            if not shouldIgnore: 
+                self._LOGGER.error("Aladdin Connect - Unable to set door status %s", ex)
+                return False
 
         return True
 
