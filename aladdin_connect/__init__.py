@@ -90,7 +90,7 @@ class AladdinConnectClient:
             return devices
         except ValueError as ex:
             self._LOGGER.error("Aladdin Connect - Unable to retrieve configuration %s", ex)
-            return
+            return None
 
     def close_door(self, device_id, door_number):
         self._set_door_status(device_id, door_number, self.DOOR_STATUS_CLOSED)
@@ -107,8 +107,9 @@ class AladdinConnectClient:
         except ValueError as ex:
             # Ignore "Door is already open/closed" errors to maintain backwards compatibility
             error = str(ex.args[0])
-            shouldIgnore = error.endswith(f'{{"code":400,"error":"Door is already {requested_door_status}"}}')
-            if not shouldIgnore: 
+            should_ignore = error.endswith(
+                f'{{"code":400,"error":"Door is already {requested_door_status}"}}')
+            if not should_ignore:
                 self._LOGGER.error("Aladdin Connect - Unable to set door status %s", ex)
                 return False
 
