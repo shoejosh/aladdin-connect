@@ -52,7 +52,7 @@ class SessionManager:
             if response and "access_token" in response:
                 self._logged_in = True
                 self._auth_token = response["access_token"]
-                self._session.headers.update({'Authorization': 'Bearer {}'.format(self._auth_token)})
+                self._session.headers.update({'Authorization': f'Bearer {self._auth_token}'})
                 return True
         except ValueError as ex:
             self._LOGGER.error("Aladdin Connect - Unable to login %s", ex)
@@ -61,17 +61,35 @@ class SessionManager:
 
     def call_api(self, api, payload=None, method='get', response_type='json'):
         self._session.headers.update({'Content-Type': 'application/x-www-form-urlencoded'})
-        return self._rest_call(self.API_BASE_URL + api, payload, method, request_type='text', response_type=response_type)
+        return self._rest_call(
+            self.API_BASE_URL + api,
+            payload,
+            method,
+            request_type='text',
+            response_type=response_type
+        )
 
     def call_rpc(self, api, payload=None, method='post', response_type='json'):
         self._session.headers.update({'Content-Type': 'application/json'})
-        return self._rest_call(self.RPC_URL + api, payload, method, request_type='json', response_type=response_type)
+        return self._rest_call(
+            self.RPC_URL + api,
+            payload,
+            method,
+            request_type='json',
+            response_type=response_type
+        )
 
-    def _rest_call(self, uri, payload=None, method='get', request_type='text', response_type='json'):
+    def _rest_call(
+        self,
+        uri,
+        payload=None,
+        method='get',
+        request_type='text',
+        response_type='json'
+    ):
         """Generic method for calling REST APIs."""
         # Sanity check parameters first...
-        if (method != 'get' and method != 'post' and
-                method != 'put' and method != 'delete'):
+        if method not in ('get', 'post', 'put', 'delete'):
             msg = "Tried call_api with bad method: {0}"
             raise ValueError(msg.format(method))
 
@@ -85,20 +103,18 @@ class SessionManager:
             return None
 
         # Unauthorized
-        if response.status_code == 401 or response.status_code == 403:
+        if response.status_code in (401, 403):
             # Maybe we got logged out? Let's try logging in if we've been logged in previously.
             if self._logged_in and self.login():
                 # Retry the request...
                 response = getattr(self._session, method)(uri, data=payload)
 
-        if response.status_code != 200 and response.status_code != 204:
-            msg = "Aladdin API call ({0}) failed: {1}, {2}".format(
-                uri, response.status_code, response.text)
+        if response.status_code not in (200, 204):
+            msg = f"Aladdin API call ({uri}) failed: {response.status_code}, {response.text}"
             raise ValueError(msg)
 
         if response.text is not None and len(response.text) > 0:
             if response_type == 'text':
                 return response.text
             return json.loads(response.text)
-        else:
-            return None
+        return None
