@@ -1,9 +1,11 @@
 # aladdin-connect
+
 Python module that allows interacting with Genie Aladdin Connect devices
 
 Note that shared doors are not currently supported, only doors that are owned by your account can be controlled
 
 ## Usage
+
 ```
 from aladdin_connect import AladdinConnectClient
 
@@ -21,4 +23,7 @@ client.open_door(my_door['device_id'], my_door['door_number'])
 
 # Get updated door status
 client.get_door_status(my_door['device_id'], my_door['door_number'])
+
+# Get updated door link status
+client.get_door_link_status(my_door['device_id'], my_door['door_number'])
 ```
