@@ -81,7 +81,8 @@ class AladdinConnectClient:
                         'door_number': door["door_index"],
                         'name': door["name"],
                         'status': self.DOOR_STATUS[door["status"]],
-                        'link_status': self.DOOR_LINK_STATUS[door["link_status"]]
+                        'link_status': self.DOOR_LINK_STATUS[door["link_status"]],
+                        'battery_level': door["battery_level"]
                     })
                 devices.append({
                     'device_id': device["id"],
@@ -125,12 +126,13 @@ class AladdinConnectClient:
             self._LOGGER.error("Aladdin Connect - Unable to get door status %s", ex)
         return self.DOOR_STATUS_UNKNOWN
 
-    def get_door_link_status(self, device_id, door_number):
+    def get_battery_status(self, device_id, door_number):
         try:
             doors = self.get_doors()
             for door in doors:
                 if door["device_id"] == device_id and door["door_number"] == door_number:
-                    return door["link_status"]
+                    return door["battery_level"]
         except ValueError as ex:
             self._LOGGER.error("Aladdin Connect - Unable to get door link status %s", ex)
         return self.DOOR_STATUS_UNKNOWN
+
