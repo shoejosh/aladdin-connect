@@ -133,6 +133,6 @@ class AladdinConnectClient:
                 if door["device_id"] == device_id and door["door_number"] == door_number:
                     return door["battery_level"]
         except ValueError as ex:
-            self._LOGGER.error("Aladdin Connect - Unable to get door link status %s", ex)
+            self._LOGGER.error("Aladdin Connect - Unable to get door battery status %s", ex)
         return self.DOOR_STATUS_UNKNOWN
 
